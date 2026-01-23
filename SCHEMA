@@ -1,0 +1,64 @@
+Project 
+{
+	name
+	description
+}
+
+
+Feature
+{
+	name
+	description
+	links
+	status
+}
+
+
+Step
+{
+	title
+	completed
+}
+
+
+User
+{
+	name
+	email
+	password
+}
+
+
+User_project
+{
+	userId
+	projectId
+	role
+}
+
+
+Project_feature
+{
+	projectId
+	featureId
+}
+
+
+Feature_step
+{
+	featureId
+	stepId
+}
+
+
+
+
+
+
+notification
+{
+	subject
+	description
+} => optional for now
+
+
