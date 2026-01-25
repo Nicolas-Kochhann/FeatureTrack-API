@@ -9,4 +9,14 @@ class Step extends Model
 {
     /** @use HasFactory<\Database\Factories\StepFactory> */
     use HasFactory;
+
+    protected $fillable = [
+        'title',
+        'completed',
+    ];
+
+    public function markStepAsCompleted(): bool
+    {
+        return $this->update(['completed' => true]);
+    }
 }

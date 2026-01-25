@@ -14,7 +14,7 @@ class ProjectController extends Controller
     public function list()
     {
         $projects = Project::all();
-        return response()->json($projects, 200);
+        return response()->json($projects, 200)->header("Content-Type","application/json");
     }
 
     /**
