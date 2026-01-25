@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('description')->nullable();
-            $table->enum('links', ['pending', 'in_progress', 'completed'])->default('pending');
+            $table->jsonb('links')->nullable();
+            $table->enum('status', ['pending','in_progress', 'completed'])->default('pending');
             $table->timestamps();
         });
     }
