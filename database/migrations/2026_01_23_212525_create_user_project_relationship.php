@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('features', function (Blueprint $table) {
-            $table->id();
-            $table->string('name');
-            $table->string('description')->nullable();
-            $table->jsonb('links')->nullable();
-            $table->enum('status', ['pending','in_progress', 'completed'])->default('pending');
-            $table->timestamps();
+        Schema::create("users_projects", function (Blueprint $table) {
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('project_id');
+            $table->enum('role', ['owner', 'leader', 'member', 'observer']);
+            $table->timestamps();
+
+            $table->primary(['user_id', 'project_id']);
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
         });
     }
@@ -28,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('features');
+        Schema::dropIfExists('users_projects');
     }
 };

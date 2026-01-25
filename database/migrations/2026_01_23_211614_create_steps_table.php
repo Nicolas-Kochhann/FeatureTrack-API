@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('title');
             $table->boolean('completed')->default(false);
             $table->timestamps();
+            $table->unsignedBigInteger('feature_id');
+            $table->foreign('feature_id')->references('id')->on('features')->onDelete('cascade');
         });
     }
 
