@@ -5,3 +5,5 @@ use App\Models\Project;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/api/projects', [ProjectController::class,'list']);
+Route::post('api/projects', [ProjectController::class,'store']);
+Route::get('/api/projects/{project}', [ProjectController::class,'show']);

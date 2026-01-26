@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreProjectRequest;
-use App\Http\Requests\UpdateProjectRequest;
+use App\Http\Requests\Project\StoreProjectRequest;
+use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -13,7 +14,13 @@ class ProjectController extends Controller
      */
     public function list()
     {
-        $projects = Project::all();
+        if(request()->has("name")){
+            $projects = Project::where("name","LIKE","%".request()->get("name")."%")->get();
+        }
+        else {
+            $projects = Project::all();
+        }
+
         return response()->json($projects, 200)->header("Content-Type","application/json");
     }
 
@@ -22,7 +29,8 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        //
+        $project = Project::create($request->all());
+        return response()->json($project->id, 200)->header("Content-Type","application/json");
     }
 
     /**
@@ -30,7 +38,7 @@ class ProjectController extends Controller
      */
     public function show(Project $project)
     {
-        //
+        return response()->json($project, 200)->header("Content-Type","application/json");
     }
 
     /**
@@ -38,7 +46,8 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        //
+        $project->update($request->all());
+        return response()->json($project->id, 200)->header("Content-Type", "application/json");
     }
 
     /**
@@ -46,6 +55,7 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $project->delete();
+        return response()->json([],200)->header("Content-Type", "application/json");
     }
 }

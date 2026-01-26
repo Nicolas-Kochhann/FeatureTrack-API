@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreFeatureRequest;
-use App\Http\Requests\UpdateFeatureRequest;
+use App\Http\Requests\Feature\StoreFeatureRequest;
+use App\Http\Requests\Feature\UpdateFeatureRequest;
 use App\Models\Feature;
 
 class FeatureController extends Controller

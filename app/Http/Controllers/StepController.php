@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreStepRequest;
-use App\Http\Requests\UpdateStepRequest;
+use App\Http\Requests\Step\StoreStepRequest;
+use App\Http\Requests\Step\UpdateStepRequest;
 use App\Models\Step;
 
 class StepController extends Controller
