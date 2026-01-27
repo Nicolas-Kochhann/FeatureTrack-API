@@ -12,9 +12,9 @@ class ProjectController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function list()
+    public function list(Request $request)
     {
-        if(request()->has("name")){
+        if($request->has("name")){
             $projects = Project::where("name","LIKE","%".request()->get("name")."%")->get();
         }
         else {
@@ -29,7 +29,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $project = Project::create($request->all());
+        $project = Project::create($request->only(['name', 'description']));
         return response()->json($project->id, 200)->header("Content-Type","application/json");
     }
 
@@ -46,7 +46,9 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, Project $project)
     {
-        $project->update($request->all());
+        $project->name = $request->input("name");
+        if($request->has("description")) $project->description = $request->input("description");
+        $project->save();
         return response()->json($project->id, 200)->header("Content-Type", "application/json");
     }
 

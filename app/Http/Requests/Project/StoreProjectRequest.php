@@ -3,6 +3,8 @@
 namespace App\Http\Requests\Project;
 
 use Auth;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreProjectRequest extends FormRequest
@@ -26,5 +28,13 @@ class StoreProjectRequest extends FormRequest
             'name' => ['required', 'string', 'max:50', 'min:3'],
             'description' => ['string', 'max:255'],
         ];
+    }
+
+    public function failedValidation(Validator $validator): array
+    {
+        throw new HttpResponseException(response()->json([
+            'message'=> 'Invalid data',
+            'errors'=> $validator->errors()
+        ], 400));
     }
 }

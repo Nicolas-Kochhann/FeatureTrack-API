@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests\Project;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+
 
 class UpdateProjectRequest extends FormRequest
 {
@@ -25,5 +28,13 @@ class UpdateProjectRequest extends FormRequest
             'name' => ['required', 'string', 'max:50', 'min:3'],
             'description' => ['string', 'max:255'],
         ];
+    }
+
+    public function failedValidation(Validator $validator): array
+    {
+        throw new HttpResponseException(response()->json([
+            'message'=> 'Invalid data',
+            'errors'=> $validator->errors()
+        ], 400));
     }
 }
