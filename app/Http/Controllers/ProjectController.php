@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
-use App\Models\Feature;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -37,7 +36,7 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
         $project = Project::with('features')->findOrFail($id); // N + 1 Escape
         return response()->json($project, 200)->header("Content-Type","application/json");
@@ -46,19 +45,19 @@ class ProjectController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProjectRequest $request, Project $project)
+    public function update(UpdateProjectRequest $request, $id)
     {
-        $project->name = $request->input("name");
-        if($request->has('description')) $project->description = $request->input("description");
-        $project->save();
+        $project = Project::findOrFail($id);
+        $project->update($request->only(["name","description"]));
         return response()->json($project, 200)->header("Content-Type", "application/json");
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Project $project)
+    public function destroy($id)
     {
+        $project = Project::findOrFail($id);
         $project->delete();
         return response()->json([],204)->header("Content-Type", "application/json");
     }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Feature;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class UpdateFeatureRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class UpdateFeatureRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,17 @@ class UpdateFeatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'name' => ['required','string','max:60', 'min:3'],
+            'description'=> ['string', 'max:500'],
+            'links' => ['array'],
         ];
+    }
+
+    public function failedValidation(Validator $validator): array
+    {
+        throw new HttpResponseException(response()->json([
+            'message'=> 'Invalid data',
+            'errors'=> $validator->errors()
+        ], 400));
     }
 }
