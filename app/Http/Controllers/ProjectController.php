@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
+use App\Models\Feature;
 use App\Models\Project;
 use Illuminate\Http\Request;
 
@@ -30,14 +31,15 @@ class ProjectController extends Controller
     public function store(StoreProjectRequest $request)
     {
         $project = Project::create($request->only(['name', 'description']));
-        return response()->json($project->id, 200)->header("Content-Type","application/json");
+        return response()->json($project, 201)->header("Content-Type","application/json");
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
+    public function show(Request $request, $id)
     {
+        $project = Project::with('features')->findOrFail($id); // N + 1 Escape
         return response()->json($project, 200)->header("Content-Type","application/json");
     }
 
@@ -47,9 +49,9 @@ class ProjectController extends Controller
     public function update(UpdateProjectRequest $request, Project $project)
     {
         $project->name = $request->input("name");
-        if($request->has("description")) $project->description = $request->input("description");
+        if($request->has('description')) $project->description = $request->input("description");
         $project->save();
-        return response()->json($project->id, 200)->header("Content-Type", "application/json");
+        return response()->json($project, 200)->header("Content-Type", "application/json");
     }
 
     /**
@@ -58,6 +60,6 @@ class ProjectController extends Controller
     public function destroy(Project $project)
     {
         $project->delete();
-        return response()->json([],200)->header("Content-Type", "application/json");
+        return response()->json([],204)->header("Content-Type", "application/json");
     }
 }

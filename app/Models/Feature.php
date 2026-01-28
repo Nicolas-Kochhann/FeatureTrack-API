@@ -16,7 +16,6 @@ class Feature extends Model
         "name",
         "description",
         "links",
-        "status",
     ];
 
     protected $casts = [

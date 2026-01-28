@@ -8,44 +8,23 @@ use App\Models\Feature;
 
 class FeatureController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
      */
     public function store(StoreFeatureRequest $request)
     {
-        //
+        $feature = Feature::create($request->only('name', 'description', 'links'));
+        return response()->json($feature, 201)->header('Content-Type','application/json');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Feature $feature)
+    public function show($id)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Feature $feature)
-    {
-        //
+        $feature = Feature::with('steps')->findOrFail($id);
+        return response()->json($feature,200)->header('Content-Type','application/json');
     }
 
     /**
@@ -53,7 +32,8 @@ class FeatureController extends Controller
      */
     public function update(UpdateFeatureRequest $request, Feature $feature)
     {
-        //
+        $feature->update($request->only('name', 'description', 'links'));
+        return response()->json($feature,200)->header('','application/json');
     }
 
     /**
@@ -61,6 +41,7 @@ class FeatureController extends Controller
      */
     public function destroy(Feature $feature)
     {
-        //
+        $feature->delete();
+        return response()->json([], 204)->header('Content-Type','application/json');
     }
 }
