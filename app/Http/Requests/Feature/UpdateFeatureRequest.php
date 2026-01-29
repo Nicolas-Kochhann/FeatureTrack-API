@@ -25,7 +25,7 @@ class UpdateFeatureRequest extends FormRequest
     {
         return [
             'name' => ['required','string','max:60', 'min:3'],
-            'description'=> ['string', 'max:500'],
+            'description'=> ['nullable','string', 'max:500'],
             'links' => ['array'],
         ];
     }
