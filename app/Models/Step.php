@@ -15,8 +15,8 @@ class Step extends Model
         'completed',
     ];
 
-    public function markStepAsCompleted(): bool
-    {
-        return $this->update(['completed' => true]);
-    }
+    protected $casts = [
+        'completed'=> 'boolean',
+    ];
+
 }

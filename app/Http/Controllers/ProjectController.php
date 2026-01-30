@@ -14,12 +14,21 @@ class ProjectController extends Controller
      */
     public function list(Request $request)
     {
-        if($request->has("name")){
-            $projects = Project::where("name","LIKE","%".request()->get("name")."%")->get();
+        $name = $request->query('name');
+        $eagerload = $request->has('eagerload');
+
+        $query = Project::query();
+
+        if($name)
+        {
+            $query->where('name','like','%'.$name.'%');
         }
-        else {
-            $projects = Project::all();
+        if($eagerload)
+        {
+            $query->with('features');
         }
+
+        $projects = $query->get();
 
         return response()->json($projects, 200)->header("Content-Type","application/json");
     }
@@ -36,9 +45,16 @@ class ProjectController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($id)
+    public function show(Request $request, $id)
     {
-        $project = Project::with('features')->findOrFail($id); // N + 1 Escape
+        $lazyload = $request->has('lazyload');
+        $query = Project::query();
+        
+        if($lazyload){
+            $query->with('features');
+        }
+
+        $project = $query->get();
         return response()->json($project, 200)->header("Content-Type","application/json");
     }
 

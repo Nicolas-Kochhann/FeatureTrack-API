@@ -4,63 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Step\StoreStepRequest;
 use App\Http\Requests\Step\UpdateStepRequest;
+use App\Models\Feature;
 use App\Models\Step;
 
 class StepController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
-    {
-        //
-    }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+    public function list($featureId){
+        $feature = Feature::findOrFail($featureId);
+        $steps = $feature->steps()->get();
+        return response()->json($steps, 200)->header('Content-Type','applicatio/json');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreStepRequest $request)
+    public function store($featureId, StoreStepRequest $request)
     {
-        //
+        $feature = Feature::findOrFail($featureId);
+        $step = $feature->steps()->create($request->only('title'));
+        return response()->json($step, 201)->header('Content-Type','application/json');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Step $step)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Step $step)
-    {
-        //
-    }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateStepRequest $request, Step $step)
+    public function update(UpdateStepRequest $request, $id)
     {
-        //
+        $step = Step::findOrFail($id);
+        $step->update($request->only('title', 'completed'));
+        return response()->json($step, 200)->header('Content-Type', 'application/json');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Step $step)
+    public function destroy($id)
     {
-        //
+        $step = Step::findOrFail($id);
+        $step->delete();
+        return response()->json([], 204)->header('Content-Type','application/json');
     }
 }

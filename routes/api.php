@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\StepController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
@@ -17,11 +18,16 @@ Route::delete('/projects/{id}', [ProjectController::class,'destroy']);
 /*
                     FEATURE ROUTES
 */
-Route::get('/projects/{projectId}/features/{id}', [FeatureController::class,'show']);
+Route::get('/projects/{projectId}/features', [FeatureController::class,'list']);
+Route::get('/features/{id}', [FeatureController::class,'show']);
 Route::post('/projects/{projectId}/features', [FeatureController::class,'store']);
-Route::patch('/projects/{projectId}/features/{id}', [FeatureController::class,'update']);
-Route::delete('/projects/{projectId}/features/{id}', [FeatureController::class,'destroy']);
+Route::patch('/features/{id}', [FeatureController::class,'update']);
+Route::delete('/features/{id}', [FeatureController::class,'destroy']);
 
 /*
                     STEP ROUTES
 */
+Route::get('/features/{featureId}/steps', [StepController::class,'list']);
+Route::post('/features/{featureId}/steps', [StepController::class,'store']);
+Route::patch('/steps/{id}', [StepController::class,'update']);
+Route::delete('/steps/{id}', [StepController::class,'destroy']);

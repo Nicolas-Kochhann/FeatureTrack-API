@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Step;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class StoreStepRequest extends FormRequest
 {
@@ -11,7 +13,7 @@ class StoreStepRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +24,15 @@ class StoreStepRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'title' => ['required','string','max:255', 'min:5'],
         ];
+    }
+
+    public function failedValidation(Validator $validator): array
+    {
+        throw new HttpResponseException(response()->json([
+            'message'=> 'Invalid data',
+            'errors'=> $validator->errors()
+        ], 400));
     }
 }

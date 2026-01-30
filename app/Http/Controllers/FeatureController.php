@@ -6,9 +6,20 @@ use App\Http\Requests\Feature\StoreFeatureRequest;
 use App\Http\Requests\Feature\UpdateFeatureRequest;
 use App\Models\Feature;
 use App\Models\Project;
+use Illuminate\Http\Request;
 
 class FeatureController extends Controller
 {
+
+    public function list(Request $request, $projectId){
+        $eagerload = $request->has('eagerload');
+        $query = Feature::query()->where('project_id', $projectId);
+
+        if($eagerload) $query->with('steps');
+
+        $features = $query->get();
+        return response()->json($features, 200)->header('Content-Type','application/json');
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -23,18 +34,24 @@ class FeatureController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show($projectId, $id)
+    public function show(Request $request, $id)
     {
-        $feature = Feature::where('project_id', $projectId)->where('id', $id)->with('steps')->firstOrFail();
+        $eagerload = $request->has('eagerload');
+        $query = Feature::query();
+
+        if($eagerload) $query->with('steps');
+
+        $feature = $query->findOrFail($id);
+
         return response()->json($feature, 200)->header('Content-Type','application/json');
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFeatureRequest $request, $projectId, $id)
+    public function update(UpdateFeatureRequest $request, $id)
     {
-        $feature = Feature::where('project_id', $projectId)->where('id', $id)->firstOrFail();
+        $feature = Feature::where('id', $id)->firstOrFail();
         $feature->update($request->only('name', 'description', 'links'));
         return response()->json($feature, 200)->header('Content-Type','application/json');
     }
@@ -42,9 +59,9 @@ class FeatureController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy($projectId, $id)
+    public function destroy($id)
     {
-        $feature = Feature::where('project_id', $projectId)->where('id',$id)->firstOrFail();
+        $feature = Feature::where('id',$id)->firstOrFail();
         $feature->delete();
         return response()->json([], 204)->header('Content-Type','application/json');
     }

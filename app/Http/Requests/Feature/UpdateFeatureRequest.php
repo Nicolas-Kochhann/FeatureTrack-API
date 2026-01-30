@@ -24,9 +24,9 @@ class UpdateFeatureRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required','string','max:60', 'min:3'],
-            'description'=> ['nullable','string', 'max:500'],
-            'links' => ['array'],
+            'name' => ['sometimes', 'required','string','max:60', 'min:3'],
+            'description'=> ['sometimes', 'nullable','string', 'max:500'],
+            'links' => ['sometimes', 'array'],
         ];
     }
 
