@@ -31,3 +31,11 @@ Route::get('/features/{featureId}/steps', [StepController::class,'list']);
 Route::post('/features/{featureId}/steps', [StepController::class,'store']);
 Route::patch('/steps/{id}', [StepController::class,'update']);
 Route::delete('/steps/{id}', [StepController::class,'destroy']);
+
+/*
+                    AUTH ROUTES
+*/
+Route::post('/register', [AuthController::class,'register']);
+Route::post('/login', [AuthController::class,'login']);
+Route::post('/refresh', [AuthController::class,'refresh']);
+Route::post('/me', [AuthController::class,'me']);
