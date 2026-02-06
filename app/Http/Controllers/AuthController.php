@@ -2,14 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\User\StoreUserRequest;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 
 
 
 class AuthController extends Controller
 {
-    
+    /**
+     * Create a user on database and return an JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register(StoreUserRequest $request)
+    {
+        $user = User::create([
+            'name' => $request->name,
+            'email'=> $request->email,
+            'password'=> Hash::make($request->password),
+         ]);
+
+         $token = Auth::login($user);
+        
+         return $this->respondWithToken($token);
+    }
+
     /**
      * Get a JWT via given credentials.
      *
@@ -33,7 +53,13 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth()->user());
+        $user = Auth::user();
+
+        if ($user) {
+            return response()->json($user, 200)->header('Content-Type', 'application/json');
+        } else {
+            return response()->json(['errors'=> 'No user logged in'], 401);
+        }
     }
 
     /**
@@ -55,7 +81,11 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(Auth::refresh());
+        try {
+            return $this->respondWithToken(Auth::refresh());
+        } catch (\Exception $e) {
+            return response()->json(['errors'=> $e->getMessage()], 401);
+        }
     }
 
     /**
