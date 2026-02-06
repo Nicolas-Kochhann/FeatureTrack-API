@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
 
-Route::middleware(["auth"])->group(function () {
+Route::middleware(['api', 'auth'])->group(function () {
     /*
                         PROJECT ROUTES
     */
@@ -34,13 +34,16 @@ Route::middleware(["auth"])->group(function () {
     Route::post('/features/{featureId}/steps', [StepController::class,'store']);
     Route::patch('/steps/{id}', [StepController::class,'update']);
     Route::delete('/steps/{id}', [StepController::class,'destroy']);
+
+    /*
+                        AUTH ROUTES
+    */
+    Route::post('/auth/logout', [AuthController::class,'logout']);
+    Route::post('/auth/refresh', [AuthController::class,'refresh']);
+    Route::get('/auth/me', [AuthController::class,'me']);
 });
 
-/*
-                    AUTH ROUTES
-*/
-Route::post('/auth/register', [AuthController::class,'register']);
-Route::post('/auth/login', [AuthController::class,'login']);
-Route::post('/auth/logout', [AuthController::class,'logout']);
-Route::post('/auth/refresh', [AuthController::class,'refresh']);
-Route::get('/auth/me', [AuthController::class,'me']);
+Route::middleware(['api'])->group(function () {
+    Route::post('/auth/register', [AuthController::class,'register']);
+    Route::post('/auth/login', [AuthController::class,'login']);
+});
