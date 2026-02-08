@@ -6,6 +6,8 @@ use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class ProjectController extends Controller
 {
@@ -17,7 +19,7 @@ class ProjectController extends Controller
         $name = $request->query('name');
         $eagerload = $request->has('eagerload');
 
-        $query = Project::query();
+        $query = Auth::user()->projects();
 
         if($name)
         {
@@ -38,7 +40,7 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $project = Project::create($request->only(['name', 'description']));
+        $project = Auth::user()->projects()->create($request->only(['name', 'description']));
         return response()->json($project, 201)->header("Content-Type","application/json");
     }
 
@@ -47,8 +49,10 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
+        Gate::authorize('view', $id);
+        
         $lazyload = $request->has('lazyload');
-        $query = Project::query();
+        $query = Project::query()->where('id', $id);
         
         if($lazyload){
             $query->with('features');
@@ -63,6 +67,8 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, $id)
     {
+        Gate::authorize('update', $id);
+
         $project = Project::findOrFail($id);
         $project->update($request->only(["name","description"]));
         return response()->json($project, 200)->header("Content-Type", "application/json");
@@ -73,6 +79,8 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('delete', $id);
+
         $project = Project::findOrFail($id);
         $project->delete();
         return response()->json([],204)->header("Content-Type", "application/json");

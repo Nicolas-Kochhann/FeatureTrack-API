@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\FeatureStatus;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Feature extends Model
@@ -21,6 +22,8 @@ class Feature extends Model
     protected $casts = [
         "links" => "array",
         "status" => FeatureStatus::class,
+        "created_at" => "datetime",
+        "updated_at" => "datetime"
     ];
 
     public function steps(): HasMany

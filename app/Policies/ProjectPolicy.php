@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enums\UserProjectRole;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -19,9 +20,9 @@ class ProjectPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Project $project): bool
+    public function view(User $user, $projectId): bool
     {
-        return false;
+        return $user->projects()->whereKey($projectId)->exists();
     }
 
     /**
@@ -29,38 +30,50 @@ class ProjectPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return true;
     }
 
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Project $project): bool
-    {
-        return false;
+    public function update(User $user, $projectId): bool
+    {    
+        return $user->projects()
+            ->whereKey($projectId)
+            ->wherePivot('role', UserProjectRole::OWNER)
+            ->exists();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Project $project): bool
+    public function delete(User $user, $projectId): bool
     {
-        return false;
+        return $user->projects()
+            ->whereKey($projectId)
+            ->wherePivot('role', UserProjectRole::OWNER)
+            ->exists();
     }
 
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Project $project): bool
+    public function restore(User $user, $projectId): bool
     {
-        return false;
+        return $user->projects()
+            ->whereKey($projectId)
+            ->wherePivot('role', UserProjectRole::OWNER)
+            ->exists();
     }
 
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Project $project): bool
+    public function forceDelete(User $user, $projectId): bool
     {
-        return false;
+        return $user->projects()
+            ->whereKey($projectId)
+            ->wherePivot('role', UserProjectRole::OWNER)
+            ->exists();
     }
 }

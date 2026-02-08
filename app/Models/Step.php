@@ -17,7 +17,9 @@ class Step extends Model
     ];
 
     protected $casts = [
-        'completed'=> 'boolean',
+        'completed' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime'
     ];
 
     public function feature(): BelongsTo
