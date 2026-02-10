@@ -8,6 +8,7 @@ use App\Models\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
+use App\Http\Controllers\Controller;
 
 class ProjectController extends Controller
 {
@@ -49,7 +50,7 @@ class ProjectController extends Controller
      */
     public function show(Request $request, $id)
     {
-        Gate::authorize('view', $id);
+        Gate::authorize('project.view', $id);
         
         $lazyload = $request->has('lazyload');
         $query = Project::query()->where('id', $id);
@@ -67,7 +68,7 @@ class ProjectController extends Controller
      */
     public function update(UpdateProjectRequest $request, $id)
     {
-        Gate::authorize('update', $id);
+        Gate::authorize('project.update/delete', $id);
 
         $project = Project::findOrFail($id);
         $project->update($request->only(["name","description"]));
@@ -79,7 +80,7 @@ class ProjectController extends Controller
      */
     public function destroy($id)
     {
-        Gate::authorize('delete', $id);
+        Gate::authorize('project.update/delete', $id);
 
         $project = Project::findOrFail($id);
         $project->delete();
