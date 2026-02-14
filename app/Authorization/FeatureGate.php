@@ -17,8 +17,7 @@ class FeatureGate {
                 {
                     $q->whereKey($featureId);
                 })
-                ->wherePivotIn('role',
-                [
+                ->wherePivotIn('role', [
                     UserProjectRole::OWNER,
                     UserProjectRole::LEADER
                 ])
@@ -38,8 +37,7 @@ class FeatureGate {
         {
             return $user->projects()
                 ->whereKey($projectId)
-                ->wherePivotIn('role', 
-                [
+                ->wherePivotIn('role', [
                     UserProjectRole::OWNER,
                     UserProjectRole::LEADER
                 ])
