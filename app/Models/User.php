@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use PHPOpenSourceSaver\JWTAuth\Contracts\JWTSubject;
@@ -51,6 +52,16 @@ class User extends Authenticatable implements JWTSubject
     public function projects(): BelongsToMany
     {
         return $this->belongsToMany(Project::class, 'users_projects')->using(UserProject::class)->withPivot('role');
+    }
+
+    public function sentInvites(): HasMany
+    {
+        return $this->hasMany(Invite::class, 'sender_id');
+    }
+
+    public function receivedInvites(): HasMany
+    {
+        return $this->hasMany(Invite::class, 'receiver_id');
     }
 
     /**

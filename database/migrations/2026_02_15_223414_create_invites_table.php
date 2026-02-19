@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('invites', function (Blueprint $table) {
+            $table->id();
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
             $table->unsignedBigInteger('project_id');
@@ -21,8 +22,6 @@ return new class extends Migration
             $table->foreign('sender_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('receiver_id')->references('id')->on('users')->cascadeOnDelete();
             $table->foreign('project_id')->references('id')->on('projects')->cascadeOnDelete();
-
-            $table->primary(['sender_id', 'receiver_id', 'project_id']);
         });
     }
 
