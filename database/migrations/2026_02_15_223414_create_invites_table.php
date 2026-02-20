@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\InviteStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('sender_id');
             $table->unsignedBigInteger('receiver_id');
             $table->unsignedBigInteger('project_id');
-            $table->enum('status', ['rejected', 'pending', 'accepted']);
+            $table->enum('status', ['rejected', 'pending', 'accepted'])->default(InviteStatus::PENDING->value);
             $table->enum('role', ['leader', 'member', 'observer']);
             $table->timestamps();
 
