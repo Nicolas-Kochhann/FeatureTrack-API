@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\FeatureStatus;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -16,7 +17,7 @@ return new class extends Migration
             $table->string('name');
             $table->text('description')->nullable();
             $table->jsonb('links')->nullable();
-            $table->enum('status', ['pending','in_progress', 'completed'])->default('pending');
+            $table->enum('status', ['pending','in_progress', 'completed'])->default(FeatureStatus::PENDING->value);
             $table->timestamps();
             $table->unsignedBigInteger('project_id');
             $table->foreign('project_id')->references('id')->on('projects')->onDelete('cascade');
