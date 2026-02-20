@@ -17,6 +17,7 @@ return new class extends Migration
             $table->unsignedBigInteger('receiver_id');
             $table->unsignedBigInteger('project_id');
             $table->enum('status', ['rejected', 'pending', 'accepted']);
+            $table->enum('role', ['leader', 'member', 'observer']);
             $table->timestamps();
 
             $table->foreign('sender_id')->references('id')->on('users')->cascadeOnDelete();
