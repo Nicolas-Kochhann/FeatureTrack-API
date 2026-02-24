@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Invite\StoreInviteRequest;
+use App\Http\Requests\Invite\UpdateInviteRequest;
 use App\Models\Invite;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class InviteController extends Controller
@@ -13,7 +14,7 @@ class InviteController extends Controller
      */
     public function listReceivedInvites()
     {
-        $invites = Auth::user()->receivedInvites();
+        $invites = Auth::user()->receivedInvites()->get();
         return response()->json($invites, 200)->header('Content-Type', 'application/json');
     }
 
@@ -22,16 +23,23 @@ class InviteController extends Controller
      */
     public function listSentInvites()
     {
-        $invites = Auth::user()->sentInvites();
+        $invites = Auth::user()->sentInvites()->get();
         return response()->json($invites, 200)->header('Content-Type', 'application/json');
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreInviteRequest $request)
     {
-        
+        $invite = Invite::create([
+            'sender_id' => Auth::user()->id,
+            'receiver_id' => $request->receiver_id,
+            'project_id' => $request->project_id,
+            'role' => $request->role
+        ]);
+
+        return response()->json($invite, 201)->header('Content-Type', 'application/json');
     }
 
     /**
@@ -46,9 +54,11 @@ class InviteController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Invite $invite)
+    public function update(UpdateInviteRequest $request, $id)
     {
-        //
+        $invite = Invite::findOrFail($id);
+        $invite->update($request->only(['receiver_id', 'role', 'status']));
+        return response()->json($invite, 200)->header('Content-Type', 'application/json');
     }
 
     /**

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FeatureController;
+use App\Http\Controllers\InviteController;
 use App\Http\Controllers\StepController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProjectController;
@@ -32,6 +33,16 @@ Route::middleware(['api', 'auth'])->group(function () {
     Route::post('/features/{featureId}/steps', [StepController::class,'store']);
     Route::patch('/steps/{id}', [StepController::class,'update']);
     Route::delete('/steps/{id}', [StepController::class,'destroy']);
+
+    /*
+                        INVITE ROUTES
+    */
+    Route::get('/receivedInvites', [InviteController::class, 'listReceivedInvites']);
+    Route::get('/sentInvites', [InviteController::class, 'listSentInvites']);  
+    Route::get('/invites/{id}', [InviteController::class, 'show']);
+    Route::post('/invites', [InviteController::class, 'store']);
+    Route::patch('/invites/{id}', [InviteController::class, 'update']);
+    Route::delete('/invites/{id}', [InviteController::class, 'destroy']);
 
     /*
                         AUTH ROUTES
