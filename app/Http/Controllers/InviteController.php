@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Invite\RespondInviteRequest;
 use App\Http\Requests\Invite\StoreInviteRequest;
 use App\Http\Requests\Invite\UpdateInviteRequest;
 use App\Models\Invite;
+use Gate;
 use Illuminate\Support\Facades\Auth;
 
 class InviteController extends Controller
@@ -32,6 +34,8 @@ class InviteController extends Controller
      */
     public function store(StoreInviteRequest $request)
     {
+        Gate::authorize('invite.create', $request->project_id);
+
         $invite = Invite::create([
             'sender_id' => Auth::user()->id,
             'receiver_id' => $request->receiver_id,
@@ -47,6 +51,8 @@ class InviteController extends Controller
      */
     public function show($id)
     {
+        Gate::authorize('invite.view', $id);
+
         $invite = Invite::findOrFail($id);
         return response()->json($invite, 200)->header('Content-Type', 'application/json');
     }
@@ -56,8 +62,19 @@ class InviteController extends Controller
      */
     public function update(UpdateInviteRequest $request, $id)
     {
+        Gate::authorize('invite.update/delete', $id);
+        
         $invite = Invite::findOrFail($id);
-        $invite->update($request->only(['receiver_id', 'role', 'status']));
+        $invite->update($request->only(['role']));
+        return response()->json($invite, 200)->header('Content-Type', 'application/json');
+    }
+
+    public function respondInvite(RespondInviteRequest $request, $id)
+    {
+        Gate::authorize('invite.respond', $id);
+
+        $invite = Invite::findOrFail($id);
+        $invite->update($request->only(['status']));
         return response()->json($invite, 200)->header('Content-Type', 'application/json');
     }
 
@@ -66,6 +83,8 @@ class InviteController extends Controller
      */
     public function destroy($id)
     {
+        Gate::authorize('invite.update/delete', $id);
+
         $invite = Invite::findOrFail($id);
         $invite->delete();
         return response()->json([], 204)->header('Content-Type', 'application/json');

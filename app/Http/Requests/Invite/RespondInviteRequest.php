@@ -2,14 +2,14 @@
 
 namespace App\Http\Requests\Invite;
 
-use App\Enums\UserProjectRole;
-use Auth;
+use App\Authorization\InviteGate;
+use App\Enums\InviteStatus;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
-class StoreInviteRequest extends FormRequest
+class RespondInviteRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -27,9 +27,7 @@ class StoreInviteRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'receiver_id'=> ['required','integer', 'exists:users,id', Rule::notIn([Auth::user()->id])],
-            'project_id' => ['required', 'integer', 'exists:projects,id'],
-            'role' => ['required', 'string', Rule::enum(UserProjectRole::class)],
+            'status' => ['required', Rule::enum(InviteStatus::class)],
         ];
     }
 

@@ -42,6 +42,7 @@ Route::middleware(['api', 'auth'])->group(function () {
     Route::get('/invites/{id}', [InviteController::class, 'show']);
     Route::post('/invites', [InviteController::class, 'store']);
     Route::patch('/invites/{id}', [InviteController::class, 'update']);
+    Route::patch('/invites/{id}/respond', [InviteController::class, 'respondInvite']);
     Route::delete('/invites/{id}', [InviteController::class, 'destroy']);
 
     /*

@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests\Invite;
 
-use App\Enums\InviteStatus;
 use App\Enums\UserProjectRole;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
@@ -26,10 +25,9 @@ class UpdateInviteRequest extends FormRequest
      */
     public function rules(): array
     {
+        
         return [
-            'receiver_id'=> ['sometimes', 'required','intenger'],
             'role' => ['sometimes', 'required', Rule::enum(UserProjectRole::class)],
-            'status' => ['sometimes', 'required', Rule::enum(InviteStatus::class)],
         ];
     }
 
