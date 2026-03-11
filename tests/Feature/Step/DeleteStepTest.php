@@ -112,4 +112,26 @@ class DeleteStepTest extends TestCase
 
         $response->assertStatus(403);
     }
+
+    public function testNonProjectUserCannotDeleteStep()
+    {
+        $nonProjectUser = User::factory()->create();
+
+        $project = Project::factory()
+            ->hasAttached(User::factory(), [
+                'role' => UserProjectRole::OWNER
+            ])
+            ->create();
+
+        $feature = Feature::factory()->create(['project_id' => $project->id]);
+        $step = Step::factory()->create(['feature_id' => $feature->id]);
+
+        $token = JWTAuth::fromUser($nonProjectUser);
+
+        $response = $this->withHeaders([
+            'Authorization' => 'Bearer ' . $token
+        ])->deleteJson("/api/steps/{$step->id}");
+
+        $response->assertStatus(403);
+    }
 }

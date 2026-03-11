@@ -11,9 +11,9 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use JWTAuth;
 use Tests\TestCase;
 
-class UpdateStepTest extends TestCase
+class ListStepTest extends TestCase
 {
-    public function testOwnerCanUpdateStep()
+    public function testOwnerCanListSteps()
     {
         $owner = User::factory()->create();
 
@@ -24,33 +24,28 @@ class UpdateStepTest extends TestCase
             ->create();
 
         $feature = Feature::factory()->create(['project_id' => $project->id]);
-        $step = Step::factory()->create(['feature_id' => $feature->id]);
-
-        $updatedData = [
-            'title' => 'Updated Step',
-            'completed' => true
-        ];
+        Step::factory()->create(['feature_id' => $feature->id]);
 
         $token = JWTAuth::fromUser($owner);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
-        ])->patchJson("/api/steps/{$step->id}", $updatedData);
+        ])->getJson("/api/features/{$feature->id}/steps");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'id',
-                'title',
-                'completed',
-                'feature_id',
-                'created_at',
-                'updated_at'
+                '*' => [
+                    'id',
+                    'title',
+                    'completed',
+                    'feature_id',
+                    'created_at',
+                    'updated_at'
+                ]
             ]);
-
-        $this->assertDatabaseHas('steps', $updatedData);
     }
 
-    public function testLeaderCanUpdateStep()
+    public function testLeaderCanListStep()
     {
         $leader = User::factory()->create();
 
@@ -64,33 +59,28 @@ class UpdateStepTest extends TestCase
             ->create();
 
         $feature = Feature::factory()->create(['project_id' => $project->id]);
-        $step = Step::factory()->create(['feature_id' => $feature->id]);
-
-        $updatedData = [
-            'title' => 'Updated Step',
-            'completed' => true
-        ];
+        Step::factory()->create(['feature_id' => $feature->id]);
 
         $token = JWTAuth::fromUser($leader);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
-        ])->patchJson("/api/steps/{$step->id}", $updatedData);
+        ])->getJson("/api/features/{$feature->id}/steps");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'id',
-                'title',
-                'completed',
-                'feature_id',
-                'created_at',
-                'updated_at'
+                '*' => [
+                    'id',
+                    'title',
+                    'completed',
+                    'feature_id',
+                    'created_at',
+                    'updated_at'
+                ]
             ]);
-
-        $this->assertDatabaseHas('steps', $updatedData);
     }
 
-    public function testMemberCanUpdateStep()
+    public function testMemberCanListSteps()
     {
         $member = User::factory()->create();
 
@@ -104,33 +94,28 @@ class UpdateStepTest extends TestCase
             ->create();
 
         $feature = Feature::factory()->create(['project_id' => $project->id]);
-        $step = Step::factory()->create(['feature_id' => $feature->id]);
-
-        $updatedData = [
-            'title' => 'Updated Step',
-            'completed' => true
-        ];
+        Step::factory()->create(['feature_id' => $feature->id]);
 
         $token = JWTAuth::fromUser($member);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
-        ])->patchJson("/api/steps/{$step->id}", $updatedData);
+        ])->getJson("/api/features/{$feature->id}/steps");
 
         $response->assertStatus(200)
             ->assertJsonStructure([
-                'id',
-                'title',
-                'completed',
-                'feature_id',
-                'created_at',
-                'updated_at'
+                '*' => [
+                    'id',
+                    'title',
+                    'completed',
+                    'feature_id',
+                    'created_at',
+                    'updated_at'
+                ]
             ]);
-
-        $this->assertDatabaseHas('steps', $updatedData);
     }
 
-    public function testObserverCannotUpdateStep()
+    public function testObserverCanListSteps()
     {
         $observer = User::factory()->create();
 
@@ -144,23 +129,28 @@ class UpdateStepTest extends TestCase
             ->create();
 
         $feature = Feature::factory()->create(['project_id' => $project->id]);
-        $step = Step::factory()->create(['feature_id' => $feature->id]);
-
-        $updatedData = [
-            'title' => 'Updated Step',
-            'completed' => true
-        ];
+        Step::factory()->create(['feature_id' => $feature->id]);
 
         $token = JWTAuth::fromUser($observer);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
-        ])->patchJson("/api/steps/{$step->id}", $updatedData);
+        ])->getJson("/api/features/{$feature->id}/steps");
 
-        $response->assertStatus(403);
+        $response->assertStatus(200)
+            ->assertJsonStructure([
+                '*' => [
+                    'id',
+                    'title',
+                    'completed',
+                    'feature_id',
+                    'created_at',
+                    'updated_at'
+                ]
+            ]);
     }
 
-    public function testNonProjectUserCannotUpdateStep()
+    public function testNonProjectUserCannotListSteps()
     {
         $nonProjectUser = User::factory()->create();
 
@@ -171,18 +161,13 @@ class UpdateStepTest extends TestCase
             ->create();
 
         $feature = Feature::factory()->create(['project_id' => $project->id]);
-        $step = Step::factory()->create(['feature_id' => $feature->id]);
-
-        $updatedData = [
-            'title' => 'Updated Step',
-            'completed' => true
-        ];
+        Step::factory()->create(['feature_id' => $feature->id]);
 
         $token = JWTAuth::fromUser($nonProjectUser);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer ' . $token
-        ])->patchJson("/api/steps/{$step->id}", $updatedData);
+        ])->getJson("/api/features/{$feature->id}/steps");
 
         $response->assertStatus(403);
     }
