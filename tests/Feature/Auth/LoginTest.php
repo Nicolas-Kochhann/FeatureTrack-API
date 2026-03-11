@@ -29,7 +29,7 @@ class LoginTest extends TestCase
         ]);
     }
 
-    public function testUserCantLogInWithWrongPassword()
+    public function testUserCannotLogInWithWrongPassword()
     {
         $url = 'api/auth/login';
 
@@ -47,7 +47,7 @@ class LoginTest extends TestCase
         ]);
     }
 
-    public function testUserCantLogInWithoutBeRegistered()
+    public function testUserCannotLogInWithoutBeRegistered()
     {
         $url = 'api/auth/login';
 
