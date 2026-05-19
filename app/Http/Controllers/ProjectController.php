@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserProjectRole;
 use App\Http\Requests\Project\StoreProjectRequest;
 use App\Http\Requests\Project\UpdateProjectRequest;
 use App\Models\Project;
@@ -41,7 +42,10 @@ class ProjectController extends Controller
      */
     public function store(StoreProjectRequest $request)
     {
-        $project = Auth::user()->projects()->create($request->only(['name', 'description']));
+        $project = Project::create($request->only('name', 'description'));
+
+        Auth::user()->projects()->attach($project->id, ['role' => UserProjectRole::OWNER]);
+
         return response()->json($project, 201)->header("Content-Type","application/json");
     }
 

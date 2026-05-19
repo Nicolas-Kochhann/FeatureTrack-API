@@ -17,7 +17,9 @@ class FeatureFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => fake()->title(),
+            'description' => 'Test description',
+            'links' => ['www.example.com']
         ];
     }
 }

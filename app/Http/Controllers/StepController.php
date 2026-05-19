@@ -29,6 +29,7 @@ class StepController extends Controller
 
         $feature = Feature::findOrFail($featureId);
         $step = $feature->steps()->create($request->only('title'));
+        $step->completed = false;
         return response()->json($step, 201)->header('Content-Type','application/json');
     }
 
